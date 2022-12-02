@@ -31,7 +31,7 @@ mongoose
 const server = app.listen(5000, console.log("working"));
 
 const io = new Server(server, {
-  pingTimeout: 60000,
+  pingTimeout: 40000,
   cors: {
     origin: "http://localhost:3000",
   },
@@ -40,18 +40,23 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("connected to socketio");
   socket.on("setup", (userData) => {
-    console.log(userData, "hello check");
-    // socket.join(userData._id);
+    console.log("hello check", userData);
+    socket.join(userData._id);
     // console.log(userData._id);
-    socket.emit("connected");
+    socket.emit("connection");
   });
   socket.on("joining", (room) => {
     socket.join(room);
     console.log("joined room " + room);
   });
   socket.on("new msg", (newm) => {
+    console.log(newm, "hehe");
     var chat = newm.chat;
+    console.log(chat);
     if (!chat.users) return console.log("users not dev");
+    chat.users.forEach((user) => {
+      socket.in(user._id).emit("received msg", newm);
+    });
     //
   });
 });

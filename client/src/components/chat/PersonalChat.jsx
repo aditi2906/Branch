@@ -28,8 +28,16 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { selectedChat, setSelectedChat, user, notification, setNotification } =
-    ChatState();
+  const { selectedChat, setSelectedChat, user } = ChatState();
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user._id);
+    socket.on("connection", () => setSocketConnected(true));
+    {
+      console.log(selectedChat, "indicate");
+    }
+  }, []);
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -51,7 +59,7 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
       setMessages(data);
       setLoading(false);
 
-      socket.emit("join chat", selectedChat._id);
+      socket.emit("joining", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -63,20 +71,22 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
       });
     }
   };
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
-    socket.on("connection", () => setSocketConnected(true));
-    {
-      console.log(selectedChat, "indicate");
-    }
-  }, []);
+
   useEffect(() => {
     fetchMessages();
 
     selectedChatCompare = selectedChat;
     // eslint-disable-next-line
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on("received msg", (newm) => {
+      if (!selectedChatCompare || selectedChatCompare._id !== newm.chat._id) {
+      } else {
+        setMessages([...messages, newm]);
+      }
+    });
+  });
 
   const sending = async (event) => {
     if (event.key === "Enter" && newMessage) {
@@ -113,28 +123,6 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
       }
     }
   };
-
-  useEffect(() => {
-    fetchMessages();
-
-    selectedChatCompare = selectedChat;
-    // eslint-disable-next-line
-  }, [selectedChat]);
-
-  useEffect(() => {
-    socket.on("message recieved", (newMessageRecieved) => {
-      if (
-        !selectedChatCompare || // if chat is not selected or doesn't match current chat
-        selectedChatCompare._id !== newMessageRecieved.chat._id
-      ) {
-        if (!notification.includes(newMessageRecieved)) {
-          setFetchAgain(!fetchAgain);
-        }
-      } else {
-        setMessages([...messages, newMessageRecieved]);
-      }
-    });
-  });
 
   const inputChange = (e) => {
     setNewMessage(e.target.value);

@@ -94,7 +94,13 @@ function ChatWithAdmin() {
   });
 
   return (
-    <>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-end",
+      }}
+    >
       <div>
         <Menu>
           <MenuButton as={Button} bg="white">
@@ -106,59 +112,68 @@ function ChatWithAdmin() {
           </MenuList>
         </Menu>
       </div>
-      <Text
-        fontSize={{ base: "28px", md: "30px" }}
-        pb={3}
-        px={2}
-        w="100%"
-        fontFamily="Work sans"
-        display="flex"
-        justifyContent={{ base: "space-between" }}
-        alignItems="center"
-      >
-        Support Chat
-      </Text>
+
       <Box
-        d="flex"
-        flexDir="column"
-        justifyContent="flex-end"
-        p={3}
-        bg="#E8E8E8"
-        w="100%"
-        h="100%"
-        borderRadius="lg"
-        overflowY="hidden"
+        width="100%"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        padding="80px"
       >
-        {console.log(messages, "checkkk")}
-        <ScrollableFeed>
-          {messages &&
-            messages.map((m, i) => (
-              <div style={{ display: "flex", overflowY: "auto" }}>
-                <span
-                  color="red"
-                  style={{
-                    backgoundColor: "black",
-                    borderRadius: "20px",
-                    padding: "5px 15px",
-                    maxWidth: "75%",
-                  }}
-                >
-                  {m.content}
-                </span>
-              </div>
-            ))}
-        </ScrollableFeed>
-        <FormControl onKeyDown={sending} id="first-name" isRequired mt={3}>
-          <Input
-            variant="filled"
-            bg="#E0E0E0"
-            placeholder="Enter a message.."
-            value={newMessage}
-            onChange={inputChange}
-          />
-        </FormControl>
+        <Text
+          fontSize={{ base: "28px", md: "30px" }}
+          pb={3}
+          px={2}
+          w="100%"
+          fontFamily="Work sans"
+          display="flex"
+          justifyContent={{ base: "space-between" }}
+          alignSelf="center"
+        >
+          Support Chat
+        </Text>
+        <Box
+          d="flex"
+          flexDir="column"
+          justifyContent="flex-end"
+          p={3}
+          bg="#E8E8E8"
+          w="100%"
+          h="100%"
+          borderRadius="lg"
+          overflowY="hidden"
+        >
+          {console.log(messages, "checkkk")}
+          <ScrollableFeed>
+            {messages &&
+              messages.map((m, i) => (
+                <div style={{ display: "flex", overflowY: "auto" }}>
+                  <span
+                    color="red"
+                    style={{
+                      backgoundColor: "black",
+                      borderRadius: "20px",
+                      padding: "5px 15px",
+                      maxWidth: "75%",
+                    }}
+                  >
+                    {m.content}
+                  </span>
+                </div>
+              ))}
+          </ScrollableFeed>
+          <FormControl onKeyDown={sending} id="first-name" isRequired mt={3}>
+            <Input
+              variant="filled"
+              bg="#E0E0E0"
+              placeholder="Enter a message.."
+              value={newMessage}
+              onChange={inputChange}
+            />
+          </FormControl>
+        </Box>
       </Box>
-    </>
+    </div>
   );
 }
 
