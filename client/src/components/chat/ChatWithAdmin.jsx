@@ -1,14 +1,28 @@
-import { Box, Text, useToast } from "@chakra-ui/react";
-import React, { useState } from "react";
+import {
+  Avatar,
+  Box,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import ScrollableFeed from "react-scrollable-feed";
 import { FormControl } from "@chakra-ui/react";
 import { Input } from "@chakra-ui/react";
 import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@chakra-ui/button";
 
 function ChatWithAdmin() {
+  const navigate = useNavigate();
   const [newMessage, setNewMessage] = useState();
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { user } = ChatState();
   const toast = useToast();
   const sending = async (event) => {
@@ -45,9 +59,53 @@ function ChatWithAdmin() {
   const inputChange = (e) => {
     setNewMessage(e.target.value);
   };
+  const logoutHandler = () => {
+    localStorage.removeItem("userInfo");
+    navigate("/");
+  };
+
+  const fetchMessages = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const API = axios.create({ baseURL: "http://localhost:5000" });
+      const { data } = await API.get(`/api/message/${user._id}`, config);
+
+      setLoading(true);
+
+      setMessages(data);
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error Occured!",
+        description: "Failed to Load the Messages",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "bottom",
+      });
+    }
+  };
+  useEffect(() => {
+    fetchMessages();
+  });
 
   return (
     <>
+      <div>
+        <Menu>
+          <MenuButton as={Button} bg="white">
+            <Avatar size="sm" cursor="pointer" />
+          </MenuButton>
+          <MenuList>
+            <MenuItem>My Profile</MenuItem> <MenuDivider />
+            <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+          </MenuList>
+        </Menu>
+      </div>
       <Text
         fontSize={{ base: "28px", md: "30px" }}
         pb={3}
@@ -72,7 +130,24 @@ function ChatWithAdmin() {
         overflowY="hidden"
       >
         {console.log(messages, "checkkk")}
-        <ScrollableFeed></ScrollableFeed>
+        <ScrollableFeed>
+          {messages &&
+            messages.map((m, i) => (
+              <div style={{ display: "flex", overflowY: "auto" }}>
+                <span
+                  color="red"
+                  style={{
+                    backgoundColor: "black",
+                    borderRadius: "20px",
+                    padding: "5px 15px",
+                    maxWidth: "75%",
+                  }}
+                >
+                  {m.content}
+                </span>
+              </div>
+            ))}
+        </ScrollableFeed>
         <FormControl onKeyDown={sending} id="first-name" isRequired mt={3}>
           <Input
             variant="filled"
