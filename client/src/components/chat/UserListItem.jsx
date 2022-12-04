@@ -5,7 +5,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
 const UserListItem = ({ user, handleFunction }) => {
-  const { selectedChat, setSelectedChat, chats, setChats } = ChatState();
+  const { selChat, setselChat, chats, setChats } = ChatState();
   const toast = useToast();
 
   return (

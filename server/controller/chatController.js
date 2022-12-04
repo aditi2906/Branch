@@ -11,7 +11,10 @@ export const accessChat = asyncHandler(async (req, res) => {
   var isChat = await chatModel
     .find({
       isAdmin: false,
-      $and: [{ users: { $elemMatch: { $eq: userId } } }],
+      $and: [
+        { users: { $elemMatch: { $eq: userId } } },
+        { users: { $elemMatch: { $eq: req.admin._id } } },
+      ],
     })
     .populate("users", "-code");
 

@@ -36,8 +36,10 @@ export const allMessages = asyncHandler(async (req, res) => {
   try {
     const message = await messageModel
       .find({ chat: req.params.chatId })
-      .populate("sender", "name pic")
-      .populate("chat");
+      .populate("sender", "name pic");
+    // .populate("chat")
+    // chatModel.populate(message,{path:"latestMessage",
+    // select:})
     res.json(message);
   } catch (error) {
     res.status(400);
@@ -63,9 +65,27 @@ export const sendAdminMessage = asyncHandler(async (req, res) => {
       path: "chat.users",
       select: "name ",
     });
-    await chatModel.findByIdAndUpdate(req.body.chatId, {
-      latestMessage: message,
-    });
+
+    var isChatExist = await chatModel.findById(chatId);
+    if (isChatExist) {
+      isChatExist.latestMessage = message;
+      isChatExist.save();
+      // chatModel.updateOne({latestMessage:message})
+      res.json(message);
+    } else {
+      const adminId = "63846e3bc542b886bd8bda23";
+      var newChat = {
+        chatName: "Admin",
+        users: [chatId, adminId],
+        _id: chatId,
+        latestMessage: message,
+      };
+      chatModel.create(newChat);
+    }
+
+    // await chatModel.findByIdAndUpdate(req.body.chatId, {
+    //   latestMessage: message,
+    // });
     res.json(message);
   } catch (error) {
     res.status(400);

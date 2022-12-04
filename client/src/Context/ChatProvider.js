@@ -3,23 +3,20 @@ import { useNavigate } from "react-router-dom";
 const ChatContext = createContext();
 
 const ChatProvider = ({ children }) => {
-  const [selectedChat, setSelectedChat] = useState();
+  const [selChat, setselChat] = useState();
   const [user, setUser] = useState();
   const [chats, setChats] = useState([]);
   const navigate = useNavigate();
-  const [log,setLog]=useState(false);
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem("userInfo"));
     setUser(userInfo);
-    setLog(true);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
   return (
     <ChatContext.Provider
       value={{
-        selectedChat,
-        setSelectedChat,
+        selChat,
+        setselChat,
         chats,
         setChats,
         user,

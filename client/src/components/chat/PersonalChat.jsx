@@ -12,7 +12,7 @@ import { getSender } from "../implement/Implement";
 import ChatWindow from "./ChatWindow";
 
 const ENDPOINT = "http://localhost:5000";
-var socket, selectedChatCompare;
+var socket, selChatCompare;
 
 const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -28,19 +28,19 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-  const { selectedChat, setSelectedChat, user } = ChatState();
+  const { selChat, setselChat, user } = ChatState();
 
   useEffect(() => {
     socket = io(ENDPOINT);
-    socket.emit("setup", user._id);
+    socket.emit("setup", user?._id);
     socket.on("connection", () => setSocketConnected(true));
     {
-      console.log(selectedChat, "indicate");
+      console.log(selChat, "indicate");
     }
   }, []);
 
   const fetchMessages = async () => {
-    if (!selectedChat) return;
+    if (!selChat) return;
 
     try {
       const config = {
@@ -49,17 +49,14 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
         },
       };
       const API = axios.create({ baseURL: "http://localhost:5000" });
-      const { data } = await API.get(
-        `/api/message/${selectedChat._id}`,
-        config
-      );
+      const { data } = await API.get(`/api/message/${selChat._id}`, config);
 
       setLoading(true);
 
       setMessages(data);
       setLoading(false);
 
-      socket.emit("joining", selectedChat._id);
+      socket.emit("joining", selChat._id);
     } catch (error) {
       toast({
         title: "Error Occured!",
@@ -75,13 +72,12 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
   useEffect(() => {
     fetchMessages();
 
-    selectedChatCompare = selectedChat;
-    // eslint-disable-next-line
-  }, [selectedChat]);
+    selChatCompare = selChat;
+  }, [selChat]);
 
   useEffect(() => {
     socket.on("received msg", (newm) => {
-      if (!selectedChatCompare || selectedChatCompare._id !== newm.chat._id) {
+      if (!selChatCompare || selChatCompare._id !== newm.chat._id) {
       } else {
         setMessages([...messages, newm]);
       }
@@ -90,7 +86,7 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sending = async (event) => {
     if (event.key === "Enter" && newMessage) {
-      socket.emit("stop typing", selectedChat._id);
+      socket.emit("stop typing", selChat._id);
       try {
         const config = {
           headers: {
@@ -100,12 +96,12 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
         {
-          console.log(selectedChat, "hehe");
+          console.log(selChat, "hehe");
         }
         const API = axios.create({ baseURL: "http://localhost:5000" });
         const { data } = await API.post(
           `/api/message`,
-          { content: newMessage, chatId: selectedChat },
+          { content: newMessage, chatId: selChat },
           config
         );
 
@@ -132,7 +128,7 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
 
   return (
     <>
-      {selectedChat ? (
+      {selChat ? (
         <>
           <Text
             fontSize={{ base: "28px", md: "30px" }}
@@ -147,17 +143,17 @@ const PersonalChat = ({ fetchAgain, setFetchAgain }) => {
             <IconButton
               d={{ base: "flex", md: "none" }}
               icon={<ArrowBackIcon />}
-              onClick={() => setSelectedChat("")}
+              onClick={() => setselChat("")}
             />
-            {selectedChat ? (
+            {selChat ? (
               <>
                 {" "}
                 <img
-                  src={selectedChat.users[0].pic}
+                  src={selChat.users[0].pic}
                   width="20px"
                   borderRadius="100%"
                 />
-                {selectedChat.users[0].name}
+                {selChat.users[0].name}
               </>
             ) : null}
           </Text>

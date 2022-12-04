@@ -3,10 +3,10 @@ import { ChatState } from "../../Context/ChatProvider.js";
 import { Box } from "@chakra-ui/layout";
 import PersonalChat from "./PersonalChat";
 const ChatBox = ({ fetchAgain, setFetchAgain }) => {
-  const { selectedChat } = ChatState();
+  const { selChat } = ChatState();
   return (
     <Box
-      d={{ base: selectedChat ? "flex" : "none", md: "flex" }}
+      d={{ base: selChat ? "flex" : "none", md: "flex" }}
       alignItems="center"
       flexDir="column"
       p={3}

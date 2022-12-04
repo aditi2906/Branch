@@ -7,9 +7,9 @@ import Loader from "../Loader.jsx";
 import { getSender } from "../implement/Implement";
 
 function MyChat({ fetchAgain }) {
-  const [log, setLog] = useState();
   const toast = useToast();
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const { selChat, setselChat, user, chats, setChats } = ChatState();
+
   const fetchChats = async () => {
     // console.log(user._id);
     try {
@@ -36,9 +36,8 @@ function MyChat({ fetchAgain }) {
     }
   };
   useEffect(() => {
-    setLog(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-  }, [8]);
+  }, [user]);
 
   const getSender = (user, users) => {
     return users[0]
@@ -85,10 +84,10 @@ function MyChat({ fetchAgain }) {
         <Stack overflowY="auto">
           {chats?.map((chat) => (
             <Box
-              onClick={() => setSelectedChat(chat)}
+              onClick={() => setselChat(chat)}
               cursor="pointer"
-              bg={selectedChat === chat ? "#38B2AC" : "#E8E8E8"}
-              color={selectedChat === chat ? "white" : "black"}
+              bg={selChat === chat ? "#38B2AC" : "#E8E8E8"}
+              color={selChat === chat ? "white" : "black"}
               px={3}
               py={2}
               borderRadius="lg"

@@ -39,7 +39,7 @@ function SideDrawer() {
     localStorage.removeItem("userInfo");
     navigate("/");
   };
-  const { user, chats, setChats, selectedChat, setSelectedChat } = ChatState();
+  const { user, chats, setChats, selChat, setselChat } = ChatState();
 
   const handleSearch = async () => {
     console.log("yo");
@@ -89,7 +89,7 @@ function SideDrawer() {
       };
       const { data } = await axios.post(`/api/chat`, { userId }, config);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
-      setSelectedChat(data);
+      setselChat(data);
       console.log(data, "data check");
       setLoadingChat(false);
       onClose();

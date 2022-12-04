@@ -90,6 +90,7 @@ function ChatWithAdmin() {
     }
   };
   useEffect(() => {
+    console.log(user, "user check");
     fetchMessages();
   });
 
