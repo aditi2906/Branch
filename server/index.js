@@ -8,7 +8,6 @@ import adminRoutes from "./Routes/adminRoutes.js";
 import chatRoutes from "./Routes/chatRoutes.js";
 import messageRoutes from "./Routes/messageRoutes.js";
 import uploadRoute from "./Routes/uploadRoutes.js";
-import { createServer } from "http";
 import { Server } from "socket.io";
 const app = express();
 app.use(bodyParser.json({ limit: "30mb", extended: true }));

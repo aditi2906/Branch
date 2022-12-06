@@ -87,7 +87,8 @@ function SideDrawer() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(`/api/chat`, { userId }, config);
+      const API = axios.create({ baseURL: "http://localhost:5000" });
+      const { data } = await API.post(`/api/chat`, { userId }, config);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setselChat(data);
       console.log(data, "data check");

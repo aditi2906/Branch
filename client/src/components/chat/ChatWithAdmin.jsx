@@ -9,6 +9,7 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
+import io from "socket.io-client";
 import React, { useEffect, useState } from "react";
 import ScrollableFeed from "react-scrollable-feed";
 import { FormControl } from "@chakra-ui/react";
@@ -17,14 +18,21 @@ import { ChatState } from "../../Context/ChatProvider";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@chakra-ui/button";
-
+const ENDPOINT = "http://localhost:5000";
+var socket, selChatCompare;
 function ChatWithAdmin() {
   const navigate = useNavigate();
   const [newMessage, setNewMessage] = useState();
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
   const { user } = ChatState();
   const toast = useToast();
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user?._id);
+    socket.on("connection", () => setSocketConnected(true));
+  }, []);
   const sending = async (event) => {
     if (event.key === "Enter" && newMessage) {
       try {
@@ -56,6 +64,7 @@ function ChatWithAdmin() {
       }
     }
   };
+  const adminId = "63846e3bc542b886bd8bda23";
   const inputChange = (e) => {
     setNewMessage(e.target.value);
   };
@@ -75,7 +84,7 @@ function ChatWithAdmin() {
       const { data } = await API.get(`/api/message/${user._id}`, config);
 
       setLoading(true);
-
+      socket.emit("joining", adminId);
       setMessages(data);
       setLoading(false);
     } catch (error) {
@@ -93,7 +102,11 @@ function ChatWithAdmin() {
     console.log(user, "user check");
     fetchMessages();
   });
-
+  useEffect(() => {
+    socket.on("received msg", (newm) => {
+      setMessages([...messages, newm]);
+    });
+  });
   return (
     <div
       style={{
