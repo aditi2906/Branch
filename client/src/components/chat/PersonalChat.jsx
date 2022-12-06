@@ -8,7 +8,7 @@ import { ArrowBackIcon } from "@chakra-ui/icons";
 
 import io from "socket.io-client";
 import { ChatState } from "../../Context/ChatProvider";
-import { getSender } from "../implement/Implement";
+import { getSender } from "../utils/Implement";
 import ChatWindow from "./ChatWindow";
 
 const ENDPOINT = "http://localhost:5000";

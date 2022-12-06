@@ -12,15 +12,15 @@ const ChatWindow = ({ messages }) => {
   const isSameSender = (messages, m, i, userId) => {
     return (
       i < messages.length - 1 &&
-      (messages[i + 1].sender._id !== m.sender._id ||
-        messages[i + 1].sender._id === undefined) &&
-      messages[i].sender._id !== userId
+      (messages[i + 1].sender?._id !== m.sender?._id ||
+        messages[i + 1].sender?._id === undefined) &&
+      messages[i].sender?._id !== userId
     );
   };
-  const isSameSenderMargin = (messages, m, i, userId) => {
+  const senderMargin = (messages, m, i, userId) => {
     console.log(m, "yoyo");
 
-    if (i < messages.length - 1 && m._id !== userId) return 33;
+    if (i < messages.length - 1 && m._id !== userId) return 700;
     else {
       return 0;
     }
@@ -34,19 +34,35 @@ const ChatWindow = ({ messages }) => {
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
-          <div style={{ display: "flex", overflowY: "auto" }}>
+          <div style={{ display: "flex" }}>
             <span
+              style={{
+                backgroundColor: `${m.sender === null ? "#BEE" : "#B9D"}`,
+                marginLeft: `${m.sender === null ? "0" : "720px"}`,
+                borderRadius: "20px",
+                padding: "5px 15px",
+                maxWidth: "75%",
+                marginTop: "4px",
+              }}
+            >
+              {m.content}
+            </span>
+            {/* <span
               color="red"
               style={{
-                backgoundColor: "black",
-                marginLeft: isSameSenderMargin(messages, m, i, user._id),
+                backgroundColor: `${m.sender === null ? "#BEE" : null}`,
+                marginLeft: senderMargin(messages, m, i, user._id),
+                marginTop: isSameSender(messages, m, i, user._id) ? 3 : 10,
                 borderRadius: "20px",
                 padding: "5px 15px",
                 maxWidth: "75%",
               }}
             >
-              {m.content}
-            </span>
+              <div style={{ display: "flex" }}>
+                <div>hello</div>
+                <div style={{ marginLeft: "0px" }}>hi</div>
+              </div>
+            </span> */}
           </div>
         ))}
     </ScrollableFeed>

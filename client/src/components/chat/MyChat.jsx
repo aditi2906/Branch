@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { ChatState } from "../../Context/ChatProvider";
 import Loader from "../Loader.jsx";
-import { getSender } from "../implement/Implement";
+import { getSender } from "../utils/Implement";
 
 function MyChat({ fetchAgain }) {
   const toast = useToast();

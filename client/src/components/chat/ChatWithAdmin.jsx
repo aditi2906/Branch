@@ -145,24 +145,28 @@ function ChatWithAdmin() {
           overflowY="hidden"
         >
           {console.log(messages, "checkkk")}
-          <ScrollableFeed>
+          <div style={{ height: "600px", overflowY: "scroll" }}>
             {messages &&
               messages.map((m, i) => (
                 <div style={{ display: "flex", overflowY: "auto" }}>
                   <span
-                    color="red"
                     style={{
-                      backgoundColor: "black",
+                      backgroundColor: `${
+                        m.sender === null ? "#B9D" : " #BEE"
+                      }`,
+                      marginLeft: `${m.sender === null ? "0px" : "1000px"}`,
                       borderRadius: "20px",
                       padding: "5px 15px",
                       maxWidth: "75%",
+                      marginTop: "4px",
                     }}
                   >
                     {m.content}
                   </span>
                 </div>
               ))}
-          </ScrollableFeed>
+          </div>
+
           <FormControl onKeyDown={sending} id="first-name" isRequired mt={3}>
             <Input
               variant="filled"
